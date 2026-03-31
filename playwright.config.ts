@@ -1,7 +1,5 @@
 import { defineConfig } from '@playwright/test';
 
-const DESKTOP_PATH = process.env.DESKTOP_PATH || '/desktop';
-
 export default defineConfig({
   testDir: './tests',
   timeout: 60_000,

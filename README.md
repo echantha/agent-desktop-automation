@@ -42,6 +42,37 @@ npm run test:all
 npm run report
 ```
 
+## Test Summary Report
+
+### Features Tested
+
+1. **API Test Run Creation** — Submits a deterministic payload to `POST /api/testrun` and validates the response contains a `runId`, `desktopUrl`, and `createdAt` timestamp. **Result: PASS**
+
+2. **Initial Desktop State & Agent Status Handling** — Verifies the desktop loads with connection status "Connected" and workspace panels locked. The agent starts in Offline status; automation sets agent to "Ready", which triggers the chat invite to appear with the correct queue name. **Result: PASS**
+
+3. **Chat Invite Acceptance & Transcript Validation** — Accepts the incoming chat, then verifies every transcript message (sender, timestamp, text) matches the payload that was submitted to the API. Confirms the message count badge reflects the correct number and workspace panels unlock. **Result: PASS**
+
+4. **Interaction Information Validation** — Compares all 8 fields (Interaction ID, Channel, Authentication Status, Account Number, Journey Name, Queue Name, Desktop Status, Start Time) rendered in the UI against the submitted payload. **Result: PASS**
+
+5. **Customer Profile Validation** — Switches to the Customer Profile tab and compares name, tier, account status, last payment date, and preferred language against the `/sampleprofile/10012.json` fixture loaded by the backend. **Result: PASS**
+
+6. **Transaction Data Validation (Paginated)** — Walks through all 3 pages of paginated transactions (23 total) and asserts every row's date, description, and amount matches the profile fixture. **Result: PASS**
+
+7. **Account History Notes** — Verifies each account history note matches the profile fixture. **Result: PASS**
+
+8. **Live Chat Simulation** — Types a message in the chat composer, sends it via button click and via Enter key, and validates: (a) the agent message appears with correct text, (b) a customer echo response arrives containing the sent text, (c) the input clears and Send button disables after sending. **Result: PASS**
+
+### Bugs Found
+
+| Bug | Description | v1 (`/desktop`) | v2 (`/desktopv2`) |
+|-----|-------------|-----------------|-------------------|
+| **BUG-001** | Chat badge count freezes at 35 messages while new messages continue appearing | **FAIL** — badge stuck at "35 messages" with 39 actual | **PASS** — fixed, shows "39 messages" |
+| **BUG-002** | Transaction amount signs contradict description semantics (e.g., "Payment Received" with negative amount) | **FAIL** — 7 of 23 transactions have inverted signs | **FAIL** — backend fixture data not fixed |
+
+See [BUG_REPORT.md](BUG_REPORT.md) for detailed reproduction steps, expected vs actual results, and affected transactions.
+
+---
+
 ## What the Tests Cover
 
 | # | Test | Description |
